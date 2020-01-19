@@ -3,3 +3,8 @@ bin
 target
 .classpath
 .settings
+.DS_Store
+*.properties
+*.log
+/.idea/
+/iconv.iml

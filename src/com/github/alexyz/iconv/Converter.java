@@ -28,6 +28,9 @@ public class Converter {
 	public boolean commit;
 	public File dwebpExecutable;
 	public int threads;
+	public boolean convertFormat = true;
+	public boolean convertLength = true;
+	public boolean convertDim;
 	
 	private ExecutorService executor;
 	private boolean cancel;
@@ -58,6 +61,10 @@ public class Converter {
 		if (format == null) {
 			throw new Exception("invalid fmt");
 		}
+
+		if (!(convertLength || convertFormat || convertDim)) {
+			throw new Exception("must convert one of length, format, dimension");
+		}
 		
 		Iterator<ImageWriter> i = ImageIO.getImageWritersBySuffix(format);
 		Iterator<ImageReader> j = ImageIO.getImageReadersBySuffix(format);
@@ -79,7 +86,7 @@ public class Converter {
 			throw new Exception("cannot specify maxlen with lossless fmt");
 		}
 		writer.dispose();
-		
+
 		if (threads > 1) {
 			executor = Executors.newFixedThreadPool(threads);
 		}
@@ -150,7 +157,7 @@ public class Converter {
 				System.out.println(String.format("%s fmt=%s fmtok=%s len=%d lenok=%s dim=%d dimok=%s type=%s", 
 						f.getName(), reader.getFormatName(), fmtok, f.length(), lengthok, dim, dimok, ConverterUtil.getTypeStr(type)));
 				BufferedImage im = null;
-				if (!fmtok || !lengthok || !dimok) {
+				if ((convertFormat && !fmtok) || (convertLength && !lengthok) || (convertDim && !dimok)) {
 					im = reader.read(0);
 				}
 				return im;
@@ -316,7 +323,7 @@ public class Converter {
 	
 	@Override
 	public String toString () {
-		return String.format("Converter [commit=%s maxdim=%s maxlen=%s recurse=%s fmt=%s indir=%s outdir=%s]", 
-				commit, maxDimension, maxLength, recurse, format, inputDir, outputDir);
+		return String.format("Converter [commit=%s maxdim=%s maxlen=%s recurse=%s fmt=%s indir=%s outdir=%s cfmt=%s clen=%s cdim=%s]",
+				commit, maxDimension, maxLength, recurse, format, inputDir, outputDir, convertFormat, convertLength, convertDim);
 	}
 }

@@ -15,12 +15,17 @@ public class ConverterMain {
 		if (args.length == 0) {
 			System.out.println("usage: java -jar iconv.jar {opt=?}");
 			System.out.println("  maxdim = maximum image dimension");
-			System.out.println("  maxlen = maximum file size");
+			System.out.println("  maxlen[KMG] = maximum file size");
 			System.out.println("  format = output format " + Arrays.toString(ImageIO.getReaderFileSuffixes()));
 			System.out.println("  commit = commit changes");
 			System.out.println("  recurse = recurse input directory");
 			System.out.println("  in = input directory");
 			System.out.println("  out = output directory");
+			System.out.println("  dwebp = path to wepb decoder");
+			System.out.println("  threads = thread count");
+			System.out.println("  cfmt = always convert format (default true)");
+			System.out.println("  clen = always convert for length (default true)");
+			System.out.println("  cdim = always convert for dimension (default false)");
 			return;
 		}
 		
@@ -43,6 +48,9 @@ public class ConverterMain {
 				case "out": converter.outputDir = new File(v); break;
 				case "dwebp": converter.dwebpExecutable = new File(v); break;
 				case "threads": converter.threads = Integer.parseInt(v); break;
+				case "cfmt": converter.convertFormat = Boolean.parseBoolean(v); break;
+				case "clen": converter.convertLength = Boolean.parseBoolean(v); break;
+				case "cdim": converter.convertDim = Boolean.parseBoolean(v); break;
 				default: throw new Exception("unrecognised key " + k);
 			}
 		}
